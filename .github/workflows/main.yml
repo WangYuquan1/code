@@ -39,6 +39,8 @@ jobs:
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
       - name: Update values.yaml & Pull Request to Config Repository
         run: |
+          echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} > token.txt
+          gh auth login --with-token < token.txt
           # GitHubログイン
           echo -e "machine github.com\nlogin ${{ secrets.GH_USERNAME }}\npassword ${{ secrets.GH_PASSWORD }}" > ~/.netrc
           # 「config」リポジトリからクローン
@@ -50,6 +52,7 @@ jobs:
           # 新規ブランチ作成
           git branch feature/${{ github.run_number }}
           git checkout feature/${{ github.run_number }}
+          ls
           # values.yamlのタグ番号を更新
           sed -i 's/tag: [0-9]*/tag: ${{ github.run_number }}/g' values.yaml
           # プッシュ処理
